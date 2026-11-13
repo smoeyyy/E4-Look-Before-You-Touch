@@ -442,26 +442,19 @@ export class GameScene extends Phaser.Scene implements Arena {
     let n = 0;
     if (this.sector === 0) {
       // sector 1, wave 1: four drones in a line
-      for (let i = 0; i < 4; i++) {
-        if (t === 60) {
-          const x = 240 + (i - 1.5) * 64;
-          const enemy = new ShmupPrefabSprite(
-            this,
-            x,
-            -30,
-            "drone",
-            2,
-            100,
-            13,
-            0.015,
-            true,
-            false,
-            x,
-            i % 2 === 0 ? 1 : -1,
-          );
-          this.enemies.push(enemy);
-        }
-      }
+    this.spawnWave(
+      t,
+      4,
+      "drone",
+      () => 60,
+      i => 240 + (i - 1.5) * 64,
+      () => -30,
+      i => i % 2 === 0 ? 1 : -1,
+      2,
+      100,
+      13,
+      0.015,
+    );
       // sector 1, wave 2: five drones in a vee
       for (let i = 0; i < 5; i++) {
         if (t === 360 + Math.abs(i - 2) * 10) {
@@ -1313,7 +1306,7 @@ export class GameScene extends Phaser.Scene implements Arena {
     this.victoryAt = this.now + VICTORY_TICKS;
     this.hud.setBoss(0);
     this.hud.announce("WARDEN DOWN", "The lanes are open");
-    console.log("victory lap: ship protected =", this.run.bossDefeted);
+    console.log("victory lap: ship protected =", this.run.bossDefeated);
     // The Warden's fall takes its bullets and escorts with it (no score).
     for (const bullet of this.bullets) {
       this.burst(bullet.x, bullet.y, 2, TINTS.spark);
@@ -1391,6 +1384,42 @@ export class GameScene extends Phaser.Scene implements Arena {
     this.hud.setPower(this.player.power);
     if (this.boss && !this.run.bossDefeated) {
       this.hud.setBoss(this.boss.fraction);
+    }
+  }
+
+private spawnWave(
+  t: number,
+  count: number,
+  kind: string,
+  spawnTime: (i: number) => number,
+  xPosition: (i: number) => number,
+  yPosition: (i: number) => number,
+  direction: (i: number) => number,
+  hp: number,
+  speed: number,
+  radius: number,
+  dropChance: number,
+): void {
+  for (let i = 0; i < count; i++) {
+    if (t === spawnTime(i)) {
+      const x = xPosition(i);
+
+      const enemy = new ShmupPrefabSprite(
+        this,
+        x,
+        yPosition(i),
+        kind,
+        hp,
+        speed,
+        radius,
+        dropChance,
+        true,
+        false,
+        x,
+        direction(i),
+      );
+
+      this.enemies.push(enemy);
     }
   }
 }
