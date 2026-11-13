@@ -442,124 +442,89 @@ export class GameScene extends Phaser.Scene implements Arena {
     let n = 0;
     if (this.sector === 0) {
       // sector 1, wave 1: four drones in a line
-    this.spawnWave(
-      t,
-      4,
-      "drone",
-      () => 60,
-      i => 240 + (i - 1.5) * 64,
-      () => -30,
-      i => i % 2 === 0 ? 1 : -1,
-      2,
-      100,
-      13,
-      0.015,
-    );
+      this.spawnWave(
+        t,
+        4,
+        "drone",
+        () => 60,
+        (i) => 240 + (i - 1.5) * 64,
+        () => -30,
+        (i) => i % 2 === 0 ? 1 : -1,
+        2,
+        100,
+        13,
+        0.015,
+      );
       // sector 1, wave 2: five drones in a vee
-      for (let i = 0; i < 5; i++) {
-        if (t === 360 + Math.abs(i - 2) * 10) {
-          const x = 168 + (i - 2) * 44;
-          const enemy = new ShmupPrefabSprite(
-            this,
-            x,
-            -30,
-            "drone",
-            2,
-            100,
-            13,
-            0.015,
-            true,
-            false,
-            x,
-            i % 2 === 0 ? 1 : -1,
-          );
-          this.enemies.push(enemy);
-        }
-      }
+      this.spawnWave(
+        t,
+        5,
+        "drone",
+        (i) => 360 + Math.abs(i - 2) * 10,
+        (i) => 168 + (i - 2) * 44,
+        () => -30,
+        (i) => i % 2 === 0 ? 1 : -1,
+        2,
+        100,
+        13,
+        0.015,
+      );
       // sector 1, wave 3: five drones in a vee
-      for (let i = 0; i < 5; i++) {
-        if (t === 660 + Math.abs(i - 2) * 10) {
-          const x = 312 + (i - 2) * 44;
-          const enemy = new ShmupPrefabSprite(
-            this,
-            x,
-            -30,
-            "drone",
-            2,
-            100,
-            13,
-            0.015,
-            true,
-            false,
-            x,
-            i % 2 === 0 ? 1 : -1,
-          );
-          this.enemies.push(enemy);
-        }
-      }
+      this.spawnWave(
+        t,
+        5,
+        "drone",
+        (i) => 660 + Math.abs(i - 2) * 10,
+        (i) => 312 + (i - 2) * 44,
+        () => -30,
+        (i) => i % 2 === 0 ? 1 : -1,
+        2,
+        100,
+        13,
+        0.015,
+      );
       // sector 1, wave 4: six drones in a line
-      for (let i = 0; i < 6; i++) {
-        if (t === 960) {
-          const x = 240 + (i - 2.5) * 64;
-          const enemy = new ShmupPrefabSprite(
-            this,
-            x,
-            -30,
-            "drone",
-            2,
-            100,
-            13,
-            0.015,
-            true,
-            false,
-            x,
-            i % 2 === 0 ? 1 : -1,
-          );
-          this.enemies.push(enemy);
-        }
-      }
+      this.spawnWave(
+        t,
+        6,
+        "drone",
+        () => 960,
+        (i) => 240 + (i - 2.5) * 64,
+        () => -30,
+        (i) => i % 2 === 0 ? 1 : -1,
+        2,
+        100,
+        13,
+        0.015,
+      );
       // sector 1, wave 5: four drones in a column
-      for (let i = 0; i < 4; i++) {
-        if (t === 1200 + i * 24) {
-          const x = 120;
-          const enemy = new ShmupPrefabSprite(
-            this,
-            x,
-            -30,
-            "drone",
-            2,
-            100,
-            13,
-            0.015,
-            true,
-            false,
-            x,
-            i % 2 === 0 ? 1 : -1,
-          );
-          this.enemies.push(enemy);
-        }
-      }
+      this.spawnWave(
+        t,
+        4,
+        "drone",
+        (i) => 1200 + i * 24,
+        () => 120,
+        () => -30,
+        (i) => i % 2 === 0 ? 1 : -1,
+        2,
+        100,
+        13,
+        0.015,
+      );
       // sector 1, wave 6: four drones in a column
-      for (let i = 0; i < 4; i++) {
-        if (t === 1260 + i * 24) {
-          const x = 360;
-          const enemy = new ShmupPrefabSprite(
-            this,
-            x,
-            -30,
-            "drone",
-            2,
-            100,
-            13,
-            0.015,
-            true,
-            false,
-            x,
-            i % 2 === 0 ? 1 : -1,
-          );
-          this.enemies.push(enemy);
-        }
-      }
+      this.spawnWave(
+        t,
+        4,
+        "drone",
+        (i) => 1260 + i * 24,
+        () => 360,
+        () => -30,
+        (i) => i % 2 === 0 ? 1 : -1,
+        2,
+        100,
+        13,
+        0.015,
+      );
     } else if (this.sector === 1) {
       // sector 2, wave 1: six drones in a vee
       for (let i = 0; i < 6; i++) {
@@ -1387,39 +1352,41 @@ export class GameScene extends Phaser.Scene implements Arena {
     }
   }
 
-private spawnWave(
-  t: number,
-  count: number,
-  kind: string,
-  spawnTime: (i: number) => number,
-  xPosition: (i: number) => number,
-  yPosition: (i: number) => number,
-  direction: (i: number) => number,
-  hp: number,
-  speed: number,
-  radius: number,
-  dropChance: number,
-): void {
-  for (let i = 0; i < count; i++) {
-    if (t === spawnTime(i)) {
-      const x = xPosition(i);
+  private spawnWave(
+    t: number,
+    count: number,
+    kind: string,
+    spawnTime: (i: number) => number,
+    xPosition: (i: number) => number,
+    yPosition: (i: number) => number,
+    direction: (i: number) => number,
+    hp: number,
+    speed: number,
+    radius: number,
+    dropChance: number,
+    firstFlag: boolean = true,
+  ): void {
+    for (let i = 0; i < count; i++) {
+      if (t === spawnTime(i)) {
+        const x = xPosition(i);
 
-      const enemy = new ShmupPrefabSprite(
-        this,
-        x,
-        yPosition(i),
-        kind,
-        hp,
-        speed,
-        radius,
-        dropChance,
-        true,
-        false,
-        x,
-        direction(i),
-      );
+        const enemy = new ShmupPrefabSprite(
+          this,
+          x,
+          yPosition(i),
+          kind,
+          hp,
+          speed,
+          radius,
+          dropChance,
+          firstFlag,
+          false,
+          x,
+          direction(i),
+        );
 
-      this.enemies.push(enemy);
+        this.enemies.push(enemy);
+      }
     }
   }
 }
