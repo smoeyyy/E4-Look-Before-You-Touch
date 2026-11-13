@@ -90,9 +90,6 @@ export class ShmupPrefabSprite extends Actor {
         arena.fire(this.x, this.y, aim(this, arena), 3.4);
         break;
       }
-      // case "dart":
-      //   if (this.age === 50) arena.fire(this.x, this.y, aim(this, arena), 3);
-      //   break;
       case "lancer":
         if (this.age % 40 !== 20 || this.x < 20 || this.x > WIDTH - 20) return;
         for (const spread of [-0.25, 0, 0.25]) {
