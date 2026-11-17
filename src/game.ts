@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { ROUTE } from "./route.ts";
+import { ROUTE, type Wave } from "./route.ts";
 import {
   type Actor,
   type Arena,
@@ -8,7 +8,12 @@ import {
   Player,
   WIDTH,
 } from "./actors.ts";
-import { ShmupBoss, ShmupPowerUp, ShmupPrefabSprite } from "./prefab.ts";
+import {
+  ENEMY_TYPES,
+  ShmupBoss,
+  ShmupPowerUp,
+  ShmupPrefabSprite,
+} from "./prefab.ts";
 import type { Hud } from "./hud.ts";
 import type { LaunchOptions } from "./main.ts";
 import { AutoPilot, KeyboardPilot, type Pilot } from "./pilots.ts";
@@ -322,13 +327,7 @@ export class GameScene extends Phaser.Scene implements Arena {
         this,
         x,
         y,
-        "drone",
-        2,
-        100,
-        13,
-        0.015,
-        true,
-        false,
+        ENEMY_TYPES.drone,
         x,
         x < WIDTH / 2 ? 1 : -1,
       ),
@@ -423,20 +422,7 @@ export class GameScene extends Phaser.Scene implements Arena {
     const t = this.now - this.sectorStart;
 
     for (const wave of sector.waves) {
-      this.spawnWave(
-        t,
-        wave.count,
-        wave.kind,
-        wave.spawnTime,
-        wave.xPosition,
-        wave.yPosition,
-        wave.direction,
-        wave.hp,
-        wave.speed,
-        wave.radius,
-        wave.dropChance,
-        wave.firstFlag,
-      );
+      this.spawnWave(t, wave);
     }
   }
 
@@ -617,37 +603,18 @@ export class GameScene extends Phaser.Scene implements Arena {
     }
   }
 
-  private spawnWave(
-    t: number,
-    count: number,
-    kind: string,
-    spawnTime: (i: number) => number,
-    xPosition: (i: number) => number,
-    yPosition: (i: number) => number,
-    direction: (i: number) => number,
-    hp: number,
-    speed: number,
-    radius: number,
-    dropChance: number,
-    firstFlag: boolean = true,
-  ): void {
-    for (let i = 0; i < count; i++) {
-      if (t === spawnTime(i)) {
-        const x = xPosition(i);
+  private spawnWave(t: number, wave: Wave): void {
+    for (let i = 0; i < wave.count; i++) {
+      if (t === wave.spawnTime(i)) {
+        const x = wave.xPosition(i);
 
         const enemy = new ShmupPrefabSprite(
           this,
           x,
-          yPosition(i),
-          kind,
-          hp,
-          speed,
-          radius,
-          dropChance,
-          firstFlag,
-          false,
+          wave.yPosition(i),
+          wave.stats,
           x,
-          direction(i),
+          wave.direction(i),
         );
 
         this.enemies.push(enemy);
