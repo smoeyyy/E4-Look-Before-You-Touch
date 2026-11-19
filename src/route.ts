@@ -1,8 +1,8 @@
-import { ENEMY_TYPES, type PrefabStats } from "./prefab.ts";
+import { ENEMY_TYPES, type EnemyStats } from "./actors.ts";
 
 export type Wave = {
   count: number;
-  stats: PrefabStats;
+  stats: EnemyStats;
   spawnTime: (i: number) => number;
   xPosition: (i: number) => number;
   yPosition: (i: number) => number;
