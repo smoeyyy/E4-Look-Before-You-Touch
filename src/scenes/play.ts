@@ -25,6 +25,15 @@ const START_LIVES = 3;
 const BOSS_WARNING_TICKS = 200;
 const VICTORY_TICKS = 180;
 
+export interface RunStats {
+  score: number;
+  lives: number;
+  kills: number;
+  hits: number;
+  continues: number;
+  bossDefeated: boolean;
+}
+
 /**
  * The whole game. mode is one of "title", "play", "attract" or "cutscene";
  * switching modes fades out and restarts this scene in the new mode.
@@ -34,7 +43,7 @@ export class PlayScene extends Phaser.Scene implements Arena {
   rng!: Rng;
   player!: Player;
   now = 0;
-  private run;
+  private run!: RunStats;
   private pilot!: Pilot;
   private backdrop!: Backdrop;
   private enemies: Enemy[] = [];
@@ -43,9 +52,6 @@ export class PlayScene extends Phaser.Scene implements Arena {
   private pickups: PowerUp[] = [];
   private sector = -1;
   private sectorStart = 0;
-  private enemy1;
-  private enemy2;
-  private enemy3;
   private boss: Boss | null = null;
   private bossDueAt = 0;
   private victoryAt = 0;
@@ -74,6 +80,7 @@ export class PlayScene extends Phaser.Scene implements Arena {
       kills: 0,
       hits: 0,
       continues: 0,
+      bossDefeated: false,
     };
 
     this.enemies = [];
@@ -325,7 +332,7 @@ export class PlayScene extends Phaser.Scene implements Arena {
 
   private hurtPlayer(): void {
     // After the Warden falls, nothing can hurt the ship during the victory lap.
-    if (this.run.bossDefeted || this.gameOver || !this.player.vulnerable) {
+    if (this.run.bossDefeated || this.gameOver || !this.player.vulnerable) {
       return;
     }
 
@@ -366,7 +373,6 @@ export class PlayScene extends Phaser.Scene implements Arena {
     this.victoryAt = this.now + VICTORY_TICKS;
     this.hud.setBoss(0);
     this.hud.announce("WARDEN DOWN", "The lanes are open");
-    console.log("victory lap: ship protected =", this.run.bossDefeated);
     // The Warden's fall takes its bullets and escorts with it (no score).
     for (const bullet of this.bullets) {
       this.burst(bullet.x, bullet.y, 2, TINTS.spark);

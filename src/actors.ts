@@ -154,7 +154,7 @@ function aim(from: { x: number; y: number }, arena: Arena): number {
 
 export type EnemyKind = "drone" | "dart" | "turret" | "lancer" | "boss";
 
-export type EnemyStats = {
+export interface EnemyStats {
   kind: EnemyKind;
   hp: number;
   score: number;
@@ -162,7 +162,7 @@ export type EnemyStats = {
   dropChance: number;
   move?: (enemy: Enemy, arena: Arena) => void;
   fire?: (enemy: Enemy, arena: Arena) => void;
-};
+}
 
 export const ENEMY_TYPES: Record<EnemyKind, EnemyStats> = {
   drone: {

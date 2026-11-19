@@ -1,22 +1,22 @@
 import { ENEMY_TYPES, type EnemyStats } from "./actors.ts";
 
-export type Wave = {
+export interface Wave {
   count: number;
   stats: EnemyStats;
   spawnTime: (i: number) => number;
   xPosition: (i: number) => number;
   yPosition: (i: number) => number;
   direction: (i: number) => number;
-};
+}
 
-export type Sector = {
+export interface Sector {
   name: string;
   subtitle: string;
   advanceAt?: number;
   forceAt?: number;
   boss?: boolean;
   waves: Wave[];
-};
+}
 
 const top = () => -30;
 const alternating = (i: number) => i % 2 === 0 ? 1 : -1;
